@@ -8,15 +8,17 @@ let app = express();
 
 app.use(bodyParser.json());
 
-app.post('/users', (req, res) => {
-  let body = _.pick(req.body, ['email', 'password']);
-  let user = new User(body);
-
-  user.save().then((user) => {
-    res.send(user);
-  }).catch((e) => {
+app.post('/users', async (req, res) => {
+  try {
+    let body = _.pick(req.body, ['email', 'password']);
+    let user = new User(body);
+    await user.save();
+    let token = await user.generateAuthToken();
+    res.header('x-auth', token).send(user);
+  }
+  catch (e) {
     res.status(400).send(e);
-  });
+  }
 });
 
 app.listen(3000, () => {
