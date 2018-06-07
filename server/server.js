@@ -4,13 +4,19 @@ const bodyParser = require('body-parser');
 
 let {mongoose} = require('./db/mongoose');
 let {User} = require('./models/user');
+let {authenticate} = require('./middleware/authenticate');
 let app = express();
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
 app.post('/users', async (req, res) => {
   try {
     let body = _.pick(req.body, ['email', 'password']);
+    let exists = await User.findByCredentials(body.email, body.password);
+    if (exists) {
+
+    }
     let user = new User(body);
     await user.save();
     let token = await user.generateAuthToken();
@@ -21,8 +27,35 @@ app.post('/users', async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log('Started up server');
+app.post('/users/login', async (req, res) => {
+  try {
+    let body = _.pick(req.body, ['email', 'password']);
+
+    let user = await User.findByCredentials(body.email, body.password);
+    let token = await user.generateAuthToken();
+    res.header('x-auth', token).send(user);
+  }
+  catch (e) {
+    res.status(400).send();
+  }
+
+});
+
+app.delete('/users/me/token', authenticate, async (req, res) => {
+  try{
+    await req.user.removeToken(req.token);
+    res.status(200).send();
+  } catch (e) {
+    res.status(400).send();
+  }
+});
+
+app.get('/users/me', authenticate, async (req, res) => {
+  res.send(req.user);
+});
+
+app.listen(port, () => {
+  console.log(`Started up at port ${port}`);
 });
 
 module.exports = {app};
