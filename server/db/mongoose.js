@@ -5,6 +5,6 @@ let db = {
   mlab: 'mongodb://kaitanuva:<takanuva1>@ds151970.mlab.com:51970/pw-keychain'
 };
 
-mongoose.connect(db.localhost || db.mlab);
+mongoose.connect(process.env.PORT? db.mlab : db.localhost);
 
 module.exports = {mongoose};
