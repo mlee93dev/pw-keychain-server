@@ -72,7 +72,7 @@ UserSchema.statics.findByCredentials = async function (email, password) {
         if (res) {
           resolve(user);
         } else {
-          reject();
+          reject('User not found.');
         }
       });
     })

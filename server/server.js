@@ -13,10 +13,6 @@ app.use(bodyParser.json());
 app.post('/users', async (req, res) => {
   try {
     let body = _.pick(req.body, ['email', 'password']);
-    let exists = await User.findByCredentials(body.email, body.password);
-    if (exists) {
-
-    }
     let user = new User(body);
     await user.save();
     let token = await user.generateAuthToken();
