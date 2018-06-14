@@ -45,6 +45,16 @@ app.post('/users/login', async (req, res) => {
 
 });
 
+app.post('/users/add', authenticate, async (req, res) => {
+  try {
+    let user = await User.addAccount(req.body.email, req.body.name);
+    res.status(200).send(user);
+  }
+  catch (e) {
+    res.status(400).send(e);
+  }
+})
+
 app.delete('/users/me/token', authenticate, async (req, res) => {
   try{
     await req.user.removeToken(req.token);

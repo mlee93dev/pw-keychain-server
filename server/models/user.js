@@ -28,7 +28,21 @@ let UserSchema = new mongoose.Schema({
       type: String,
       required: true
     }
-  }]
+  }],
+  accounts: [
+    {
+      name: {
+        type: String,
+        required: true,
+        unique: true
+      },
+      password: {
+        type: String,
+        required: true
+        // be randomly generated, preferably automatically
+      }
+    }
+  ]
 });
 
 UserSchema.methods.toJSON = function () {
@@ -113,6 +127,18 @@ UserSchema.statics.findByToken = function (token) {
     'tokens.access': 'auth'
   });
 };
+
+UserSchema.statics.addAccount = function (email, name) {
+  let password = 'abc123' //randomly generate this
+  let User = this;
+  return User.findOneAndUpdate({email}, {$set:{accounts : accounts.push({name, password})}}, {new: true}, function (err, user) {
+    if (err) {
+      throw err;
+    } else {
+      return user;
+    }
+  })
+}
 
 let User = mongoose.model('User', UserSchema);
 
