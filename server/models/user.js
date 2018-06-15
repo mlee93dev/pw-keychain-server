@@ -131,7 +131,7 @@ UserSchema.statics.findByToken = function (token) {
 UserSchema.statics.addAccount = function (email, name) {
   let password = 'abc123' //randomly generate this
   let User = this;
-  return User.findOneAndUpdate({email}, {$set:{accounts : accounts.push({name, password})}}, {new: true}, function (err, user) {
+  return User.findOneAndUpdate({email}, {$push: {accounts : [{name, password}]}}, {new: true}, function (err, user) {
     if (err) {
       throw err;
     } else {

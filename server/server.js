@@ -51,6 +51,7 @@ app.post('/users/add', authenticate, async (req, res) => {
     res.status(200).send(user);
   }
   catch (e) {
+    console.log('An error has occurred', e);
     res.status(400).send(e);
   }
 });
