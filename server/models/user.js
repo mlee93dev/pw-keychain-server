@@ -77,23 +77,26 @@ UserSchema.methods.removeToken = function (token) {
 };
 
 UserSchema.statics.findByCredentials = async function (email, password) {
-  try {
+  // try {
     let User = this;
     let user = await User.findOne({email});
+    if (!user) {
+      return null;
+    }
     
     return new Promise((resolve, reject) => {
       bcrypt.compare(password, user.password, (err, res) => {
         if (res) {
           resolve(user);
         } else {
-          reject('User not found.');
+          reject();
         }
       });
     })
-  }
-  catch (e) {
-    throw new Error('User not found.');
-  }
+  // }
+  // catch (e) {
+  //   return e;
+  // }
 };
 
 UserSchema.pre('save', function (next) {
@@ -131,7 +134,7 @@ UserSchema.statics.findByToken = function (token) {
 UserSchema.statics.addAccount = function (email, name) {
   let password = 'abc123' //randomly generate this
   let User = this;
-  return User.findOneAndUpdate({email}, {$push: {accounts : [{name, password}]}}, {new: true}, function (err, user) {
+  return User.findOneAndUpdate({email}, {$push:{accounts : [{name, password}]}}, {new: true}, function (err, user) {
     if (err) {
       throw err;
     } else {

@@ -36,10 +36,14 @@ app.post('/users/login', async (req, res) => {
     let body = _.pick(req.body, ['email', 'password']);
 
     let user = await User.findByCredentials(body.email, body.password);
+    if (!user) {
+      throw new Error('User not found.');
+    }
     let token = await user.generateAuthToken();
     res.header('x-auth', token).send(user);
   }
   catch (e) {
+    console.log(e);
     res.status(400).send(e);
   }
 
