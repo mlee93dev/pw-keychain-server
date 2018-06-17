@@ -53,7 +53,7 @@ UserSchema.methods.toJSON = function () {
 UserSchema.methods.generateAuthToken = function () {
   let user = this;
   let access = 'auth';
-  let token = jwt.sign({_id: user._id.toHexString(), access}, 'abc').toString();
+  let token = jwt.sign({_id: user._id.toHexString(), access}, 'abc', {expiresIn: '5'}).toString();
 
   user.tokens = user.tokens.concat([{access, token}]);
 
@@ -129,15 +129,11 @@ UserSchema.statics.addAccount = function (email, name) {
     let random = Math.floor(Math.random()*93 + 33);
     return String.fromCharCode(random);
   }
-
   let charArray = [];
   while (charArray.length < 10) {
     charArray.push(getRandomChar());
   }
   let password = charArray.join('');
-
-  console.log(password);
-
   let User = this;
   return User.findOneAndUpdate({email}, {$push:{accounts : [{name, password}]}}, {new: true});
 };
