@@ -38,7 +38,6 @@ let UserSchema = new mongoose.Schema({
       password: {
         type: String,
         required: true
-        // be randomly generated, preferably automatically
       }
     }
   ]
@@ -76,7 +75,6 @@ UserSchema.methods.removeToken = function (token) {
 };
 
 UserSchema.statics.findByCredentials = async function (email, password) {
-  // try {
     let User = this;
     let user = await User.findOne({email});
     if (!user) {
@@ -92,10 +90,6 @@ UserSchema.statics.findByCredentials = async function (email, password) {
         }
       });
     })
-  // }
-  // catch (e) {
-  //   return e;
-  // }
 };
 
 UserSchema.pre('save', function (next) {
@@ -131,7 +125,19 @@ UserSchema.statics.findByToken = function (token) {
 };
 
 UserSchema.statics.addAccount = function (email, name) {
-  let password = 'abc123' //randomly generate this
+  getRandomChar = function (){
+    let random = Math.floor(Math.random()*93 + 33);
+    return String.fromCharCode(random);
+  }
+
+  let charArray = [];
+  while (charArray.length < 10) {
+    charArray.push(getRandomChar());
+  }
+  let password = charArray.join('');
+
+  console.log(password);
+
   let User = this;
   return User.findOneAndUpdate({email}, {$push:{accounts : [{name, password}]}}, {new: true});
 };

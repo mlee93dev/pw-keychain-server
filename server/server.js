@@ -60,11 +60,12 @@ app.post('/users/add', authenticate, async (req, res) => {
         throw new Error('That account already exists.');
       }
       let updatedUser = await User.addAccount(user.email, req.body.name);
-      res.status(200).send(updatedUser);
+      return res.status(200).send(updatedUser);
     }
     throw new Error('That user does not exist.');
   }
   catch (e) {
+    console.log(e);
     res.status(400).send({'errmsg': e.message});
   }
 });
