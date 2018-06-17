@@ -33,8 +33,7 @@ let UserSchema = new mongoose.Schema({
     {
       name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
       },
       password: {
         type: String,
@@ -134,13 +133,7 @@ UserSchema.statics.findByToken = function (token) {
 UserSchema.statics.addAccount = function (email, name) {
   let password = 'abc123' //randomly generate this
   let User = this;
-  return User.findOneAndUpdate({email}, {$push:{accounts : [{name, password}]}}, {new: true}, function (err, user) {
-    if (err) {
-      throw err;
-    } else {
-      return user;
-    }
-  });
+  return User.findOneAndUpdate({email}, {$push:{accounts : [{name, password}]}}, {new: true});
 };
 
 let User = mongoose.model('User', UserSchema);

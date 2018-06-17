@@ -27,7 +27,7 @@ app.post('/users', async (req, res) => {
     res.header('x-auth', token).send(user);
   }
   catch (e) {
-    res.status(400).send(e);
+    res.status(400).send({'errmsg': e.message});
   }
 });
 
@@ -50,12 +50,22 @@ app.post('/users/login', async (req, res) => {
 
 app.post('/users/add', authenticate, async (req, res) => {
   try {
-    let user = await User.addAccount(req.body.email, req.body.name);
-    res.status(200).send(user);
+    const token = req.header('x-auth');
+    const user = await User.findByToken(token);
+    if (user) {
+      let found = user.accounts.find((v,i) => {
+        return v['name'] === req.body.name;
+      });
+      if (found) {
+        throw new Error('That account already exists.');
+      }
+      let updatedUser = await User.addAccount(user.email, req.body.name);
+      res.status(200).send(updatedUser);
+    }
+    throw new Error('That user does not exist.');
   }
   catch (e) {
-    console.log('An error has occurred', e);
-    res.status(400).send(e);
+    res.status(400).send({'errmsg': e.message});
   }
 });
 
