@@ -2,6 +2,11 @@ let {User} = require('./../models/user');
 
 let authenticate = async (req, res, next) => {
   let token = req.header('x-auth');
+  if (token) {
+    console.log(token);
+  } else {
+    console.log('no token');
+  }
 
   try {
     let user = await User.findByToken(token);
