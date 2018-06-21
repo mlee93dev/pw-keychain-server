@@ -43,7 +43,7 @@ app.post('/users/login', async (req, res) => {
     res.header('x-auth', token).send(user);
   }
   catch (e) {
-    res.status(400).send({'errmsg': 'Invalid username or password'});
+    res.status(400).send({'message': 'Invalid username or password'});
   }
 
 });
@@ -66,7 +66,7 @@ app.post('/users/add', authenticate, async (req, res) => {
   }
   catch (e) {
     console.log(e);
-    res.status(400).send({'errmsg': e.message});
+    res.status(400).send({'message': e.message});
   }
 });
 
