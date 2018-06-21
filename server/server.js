@@ -11,7 +11,6 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 app.use(function (req, res, next) {
-  // res.header('Access-Control-Allow-Origin', 'https://protected-woodland-32658.herokuapp.com');
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Expose-Headers', 'x-auth');
   res.header('Access-Control-Allow-Headers', 'Origin, x-auth, X-Requested-With, Content-Type, Accept');
@@ -61,7 +60,7 @@ app.post('/users/add', authenticate, async (req, res) => {
         throw new Error('That account already exists.');
       }
       let updatedUser = await User.addAccount(user.email, req.body.name);
-      return res.status(200).send(updatedUser);
+      return res.status(200).header('x-auth', req.newToken).send(updatedUser);
     }
     throw new Error('That user does not exist.');
   }
