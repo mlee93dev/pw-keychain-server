@@ -79,8 +79,16 @@ app.delete('/users/me/token', authenticate, async (req, res) => {
   }
 });
 
-app.get('/users/me', authenticate, async (req, res) => {
-  res.send(req.user);
+app.get('/users/me/accounts', authenticate, async (req, res) => {
+  try{
+    const token = req.header('x-auth');
+    const user = await User.findByToken(token);
+    const accounts = user.accounts;
+    res.status(200).header('x-auth', req.newToken).send(accounts);
+  } catch (e) {
+    res.status(400).send({'message': e.message});
+  }
+  res.send(req.accounts);
 });
 
 app.listen(port, () => {
