@@ -9,8 +9,8 @@ let authenticate = async (req, res, next) => {
     const timeNow = new Date;
     const UTCnow = Date.UTC(timeNow.getUTCFullYear(), timeNow.getUTCMonth(), timeNow.getUTCDate(),
       timeNow.getUTCHours(), timeNow.getUTCMinutes(), timeNow.getUTCSeconds());
-    // console.log(tokenExp);
-    // console.log(UTCnow/1000);
+    console.log(tokenExp);
+    console.log(UTCnow/1000);
     if (tokenExp - 1800 < UTCnow / 1000) {
       console.log('new token sent');
       const newToken = await user.generateAuthToken();
