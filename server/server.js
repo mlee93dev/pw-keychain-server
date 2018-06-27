@@ -92,6 +92,26 @@ app.get('/users/me/accounts', authenticate, async (req, res) => {
   res.send(req.accounts);
 });
 
+app.delete('/users/me/accounts/delete', authenticate, async (req, res) => {
+  try{
+    const token = req.header('x-auth');
+    const user = await User.findByToken(token);
+    if (user) {
+      let found = user.accounts.find((v,i) => {
+        return v['name'] === req.body.name;
+      });
+      if (!found) {
+        throw new Error('That account doesn\'t exist.');
+      }
+      let updatedUser = await User.deleteAccount(user.email, req.body.name);
+      return res.status(200).header('x-auth', req.newToken).send(updatedUser);
+    }
+    throw new Error('That user does not exist.');
+  } catch (e) {
+    res.status(400).send({'message': e.message});
+  }
+})
+
 app.listen(port, () => {
   console.log(`Started up at port ${port}`);
 });

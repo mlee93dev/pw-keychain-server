@@ -135,8 +135,13 @@ UserSchema.statics.addAccount = function (email, name) {
   }
   let password = charArray.join('');
   let User = this;
-  return User.findOneAndUpdate({email}, {$push:{accounts : [{name, password}]}}, {new: true});
+  return User.findOneAndUpdate({email}, {$push:{accounts:[{name, password}]}}, {new: true});
 };
+
+UserSchema.statics.deleteAccount = function (email, name) {
+  let User = this;
+  return User.findOneAndUpdate({email}, {$pull:{accounts:{name}}}, {safe: true, new: true});
+}
 
 let User = mongoose.model('User', UserSchema);
 
