@@ -89,7 +89,6 @@ app.get('/users/me/accounts', authenticate, async (req, res) => {
   } catch (e) {
     res.status(400).send({'message': e.message});
   }
-  res.send(req.accounts);
 });
 
 app.delete('/users/me/accounts/delete', authenticate, async (req, res) => {
