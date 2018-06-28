@@ -11,11 +11,11 @@ let authenticate = async (req, res, next) => {
       timeNow.getUTCHours(), timeNow.getUTCMinutes(), timeNow.getUTCSeconds());
     console.log(tokenExp);
     console.log(UTCnow/1000);
-    // if (tokenExp - 1800 < UTCnow / 1000) {
-    //   console.log('new token sent');
-    //   const newToken = await user.generateAuthToken();
-    //   req.newToken = newToken;
-    // }
+    if (tokenExp - 1800 < UTCnow / 1000) {
+      console.log('new token sent');
+      const newToken = await user.generateAuthToken();
+      req.newToken = newToken;
+    }
     req.user = user;
     req.token = token;
     next();
