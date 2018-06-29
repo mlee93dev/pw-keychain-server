@@ -1,11 +1,14 @@
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
+const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 
 let {mongoose} = require('./db/mongoose');
 let {User} = require('./models/user');
 let {authenticate} = require('./middleware/authenticate');
 let app = express();
+
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
@@ -109,7 +112,48 @@ app.delete('/users/me/accounts/delete', authenticate, async (req, res) => {
   } catch (e) {
     res.status(400).send({'message': e.message});
   }
-})
+});
+
+app.post('/forgot', async (req, res) => {
+  try {
+    const token = await crypto.randomBytes(20, (err, buf) => {
+      if (err) throw err;
+      return buf.toString('hex');
+    });
+    const user = await User.findOne({email: req.body.email}, (err, user) => {
+      if (err) throw new Error('No account with that email exists.');
+      user.resetPasswordToken = token;
+      user.resetPasswordExpires = Date.now() + 3600000;
+      user.save();
+    });
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'markleedev1933@gmail.com',
+        pass: '0Ur2g\;WPO'
+      }
+    });
+    const mailOptions = {
+      from: 'markleedev1933@gmail.com',
+      to: user.email,
+      subject: 'PwKeychain Password Reset',
+      text: `Please click the following link to reset your password: \n
+        https:// + ${req.headers.host} + /reset/ + ${token} \n\n
+        If you did request this, please ignore this email and your password will remain unchanged.`
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info) {
+      if (error) {
+        console.log(error);
+        throw new Error('There was an error sending the email.');
+      } 
+      res.status(200).send();
+    })
+
+  } catch (e) {
+    res.status(400).send({'message': e.message});
+  }
+});
 
 app.listen(port, () => {
   console.log(`Started up at port ${port}`);
