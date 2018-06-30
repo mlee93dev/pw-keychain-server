@@ -121,10 +121,10 @@ app.post('/forgot', async (req, res) => {
     const user = await User.findOneAndUpdate({email: req.body.email}, 
       {$set: {resetPasswordToken: token, resetPasswordExpires: Date.now() + 3600000}}, {new: true});
     const transporter = nodemailer.createTransport({
-      service: 'SendGrid',
+      service: 'Mailgun',
       auth: {
-        user: 'markleedev1933',
-        pass: 'spkaPTrS0'
+        user: 'sandboxbd1c82fa486a411d8252e00086824911.mailgun.org',
+        pass: 'cQSo6&P53'
       }
     });
     const mailOptions = {
