@@ -2,6 +2,7 @@ const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport');
 const crypto = require('crypto');
 
 let {mongoose} = require('./db/mongoose');
@@ -116,21 +117,15 @@ app.delete('/users/me/accounts/delete', authenticate, async (req, res) => {
 
 app.post('/forgot', async (req, res) => {
   try {
-    const token = await crypto.randomBytes(20, (err, buf) => {
-      if (err) throw err;
-      return buf.toString('hex');
-    });
-    const user = await User.findOne({email: req.body.email}, (err, user) => {
-      if (err) throw new Error('No account with that email exists.');
-      user.resetPasswordToken = token;
-      user.resetPasswordExpires = Date.now() + 3600000;
-      user.save();
-    });
+    let buffer = crypto.randomBytes(20);
+    let token = buffer.toString('hex');
+    const user = await User.findOneAndUpdate({email: req.body.email}, 
+      {$set: {resetPasswordToken: token, resetPasswordExpires: Date.now() + 3600000}}, {new: true});
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      service: 'SendGrid',
       auth: {
-        user: 'markleedev1933@gmail.com',
-        pass: '0Ur2g\;WPO'
+        user: 'markleedev1933',
+        pass: 'spkaPTrS0'
       }
     });
     const mailOptions = {
@@ -138,8 +133,8 @@ app.post('/forgot', async (req, res) => {
       to: user.email,
       subject: 'PwKeychain Password Reset',
       text: `Please click the following link to reset your password: \n
-        https:// + ${req.headers.host} + /reset/ + ${token} \n\n
-        If you did request this, please ignore this email and your password will remain unchanged.`
+        https://${req.headers.host}/reset/${token} \n
+        If you did not request this, please ignore this email and your password will remain unchanged.`
     };
     
     transporter.sendMail(mailOptions, function(error, info) {

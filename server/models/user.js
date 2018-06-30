@@ -29,8 +29,12 @@ let UserSchema = new mongoose.Schema({
       required: true
     }
   }],
-  resetPasswordToken: String,
-  resetPasswordExpires: Date,
+  resetPasswordToken: {
+    type: String
+  },
+  resetPasswordExpires: {
+    type: Date
+  },
   accounts: [
     {
       name: {
