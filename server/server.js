@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const hbs = require('hbs');
 
 let {mongoose} = require('./db/mongoose');
 let {User} = require('./models/user');
@@ -11,6 +12,7 @@ let app = express();
 
 const port = process.env.PORT || 3000;
 
+app.set('view engine', 'hbs');
 app.use(bodyParser.json());
 
 app.use(function (req, res, next) {
@@ -147,6 +149,17 @@ app.post('/forgot', async (req, res) => {
   } catch (e) {
     res.status(400).send({'message': e.message});
   }
+});
+
+app.get('/reset/:token', function(req, res) {
+  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+    if (!user) {
+      res.render('error');
+    }
+    res.render('reset.hbs', {
+      user: req.user
+    });
+  });
 });
 
 app.listen(port, () => {
