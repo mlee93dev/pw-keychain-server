@@ -2,7 +2,6 @@ const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
-const smtpTransport = require('nodemailer-smtp-transport');
 const crypto = require('crypto');
 
 let {mongoose} = require('./db/mongoose');
