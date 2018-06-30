@@ -123,8 +123,8 @@ app.post('/forgot', async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'Mailgun',
       auth: {
-        user: 'sandboxbd1c82fa486a411d8252e00086824911.mailgun.org',
-        pass: 'cQSo6&P53'
+        user: 'postmaster@sandboxbd1c82fa486a411d8252e00086824911.mailgun.org',
+        pass: '530d24384be84b0a8767d21f995f3b72-e44cc7c1-edf7bba2'
       }
     });
     const mailOptions = {
