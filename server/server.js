@@ -154,7 +154,7 @@ app.post('/forgot', async (req, res) => {
 app.get('/reset/:token', function(req, res) {
   User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
     if (!user) {
-      res.render('error');
+      return res.status(400).send({'message': 'Invalid token.'});
     }
     res.render('reset.hbs', {
       user: req.user
