@@ -37,13 +37,17 @@
       if (password !== confirm){
         document.getElementById('submitButton').disabled = true;
         document.getElementById('matchError').style.display = 'block';
-      } else if (password.length < 6){
+      } else {
+        document.getElementById('matchError').style.display = 'none';
+      }
+      if (password.length < 6){
         document.getElementById('submitButton').disabled = true;
         document.getElementById('lengthError').style.display = 'block';
       } else {
-        document.getElementById('submitButton').disabled = false;
-        document.getElementById('matchError').style.display = 'none';
         document.getElementById('lengthError').style.display = 'none';
+      }
+      if (password === confirm && password.length >= 6) {
+        document.getElementById('submitButton').disabled = false;
       }
     }
 
