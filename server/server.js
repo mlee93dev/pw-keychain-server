@@ -170,6 +170,7 @@ app.post('/reset/:token', async function(req, res){
           res.render('error.hbs');
         }
     });
+    console.log(user);
     const transporter = nodemailer.createTransport({
       service: 'Mailgun',
       auth: {
