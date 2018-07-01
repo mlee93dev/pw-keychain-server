@@ -11,7 +11,7 @@
   <body>
     <div class="container">
     <h1>Password Reset</h1>
-    <form name="pwForm" onsubmit="return confirm('Are you sure you want to update your password?');">
+    <form name="pwForm" onsubmit="onSubmit()">
       <div class="row" style="padding: 5px">
         <label for="password">New Password:</label> 
         <input class="form-control" type="password" name="password" placeholder="New password" autofocus="true">
@@ -19,7 +19,8 @@
       <div class="row" style="padding: 5px">
         <label for="confirm">Confirm Password:</label>
         <input class="form-control" type="password" name="confirm" placeholder="Confirm password">
-        <p id="error" style="display:none;color:red">The passwords do not match.</p>
+        <p id="matchError" style="display:none;color:red">The passwords do not match.</p>
+        <p id="lengthError" style="display:none;color:red">Please enter a password with 6 or more characters.</p>
       </div>
       <div class="row" style="padding: 5px" >
         <button class="btn btn-success" id="submitButton" name="submitButton" type="submit">Update Password</button>
@@ -29,16 +30,28 @@
   <script>
     let form = document.pwForm;
 
-    function formCheck(e){
+    function formCheck(){
       const password = form.password.value;
       const confirm = form.confirm.value;
 
       if (password !== confirm){
         document.getElementById('submitButton').disabled = true;
-        document.getElementById('error').style.display = 'block';
+        document.getElementById('matchError').style.display = 'block';
+      } else if (password.length < 6){
+        document.getElementById('submitButton').disabled = true;
+        document.getElementById('lengthError').style.display = 'block';
       } else {
         document.getElementById('submitButton').disabled = false;
-        document.getElementById('error').style.display = 'none';
+        document.getElementById('matchError').style.display = 'none';
+        document.getElementById('lengthError').style.display = 'none';
+      }
+    }
+
+    function onSubmit(){
+      if (confirm('Are you sure you want to change your password?')) {
+        document.forms[0].submit();
+      } else {
+        return false;
       }
     }
 
