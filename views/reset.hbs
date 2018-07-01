@@ -12,6 +12,7 @@
     <div class="container">
     <h1>Password Reset</h1>
     <form name="pwForm" onsubmit="onSubmit()" method="POST">
+      <input style="display:hidden" type="text" value="{{user}}">
       <div class="row" style="padding: 5px">
         <label for="password">New Password:</label> 
         <input class="form-control" type="password" name="password" placeholder="New password" autofocus="true">
