@@ -34,6 +34,7 @@
     function formCheck(){
       const password = form.password.value;
       const confirm = form.confirm.value;
+      console.log(form.email.value);
 
       if (password !== confirm){
         document.getElementById('submitButton').disabled = true;
