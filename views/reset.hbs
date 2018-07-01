@@ -11,19 +11,38 @@
   <body>
     <div class="container">
     <h1>Password Reset</h1>
-    <form>
-      <div class="row" style="padding: 20px">
+    <form name="pwForm">
+      <div class="row" style="padding: 5px">
         <label for="password">New Password:</label> 
         <input class="form-control" type="password" name="password" placeholder="New password" autofocus="true">
       </div>
-      <div class="row" style="padding: 20px">
+      <div class="row" style="padding: 5px">
         <label for="confirm">Confirm Password:</label>
         <input class="form-control" type="password" name="confirm" placeholder="Confirm password">
+        <p id="error" style="display:none;color:red">The passwords do not match.</p>
       </div>
-      <div class="row">
-        <button class="btn btn-success" type="submit">Update Password</button>
+      <div class="row" style="padding: 5px" >
+        <button class="btn btn-success" id="submitButton" name="submitButton" type="submit">Update Password</button>
       </div>
     </form>
     </div>
+  <script>
+    let form = document.pwForm;
+
+    function formCheck(e){
+      const password = myForm.password.value;
+      const confirm = myForm.confirm.value;
+
+      if (password !== confirm){
+        document.getElementById('submitButton').disabled = true;
+        document.getElementById('error').style.display = 'block';
+      } else {
+        document.getElementById('submitButton').disabled = false;
+        document.getElementById('error').style.display = 'none';
+      }
+    }
+
+    form.confirm.addEventListener("blur", formCheck);
+  </script>
   </body>
 </html>

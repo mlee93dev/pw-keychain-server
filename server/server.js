@@ -144,7 +144,7 @@ app.post('/forgot', async (req, res) => {
         throw new Error('There was an error sending the email.');
       } 
       res.status(200).send();
-    })
+    });
 
   } catch (e) {
     res.status(400).send({'message': e.message});
@@ -152,14 +152,49 @@ app.post('/forgot', async (req, res) => {
 });
 
 app.get('/reset/:token', function(req, res) {
-  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+  User.findOne({resetPasswordToken: req.params.token, resetPasswordExpires: {$gt:Date.now()}}, function(err, user) {
     if (!user) {
-      return res.status(400).send({'message': 'Invalid token.'});
+      res.render('error.hbs');
     }
     res.render('reset.hbs', {
       user: req.user
     });
   });
+});
+
+app.post('/reset/:token', async function(req, res){
+  try{
+    const user = await User.findOneAndUpdate({resetPasswordToken: req.params.token, resetPasswordExpires: {$gt:Date.now()}},
+      {$set: {password: req.body.password, resetPasswordToken: null, resetPasswordExpires: null}}, {new: true}, function(err, user) {
+        if (!user) {
+          res.render('error.hbs');
+        }
+    });
+    const transporter = nodemailer.createTransport({
+      service: 'Mailgun',
+      auth: {
+        user: 'postmaster@sandboxbd1c82fa486a411d8252e00086824911.mailgun.org',
+        pass: '530d24384be84b0a8767d21f995f3b72-e44cc7c1-edf7bba2'
+      }
+    });
+    const mailOptions = {
+      from: 'markleedev1933@gmail.com',
+      to: user.email,
+      subject: 'PwKeychain Password Changed',
+      text: `Your password has been changed. If you did not intend to do this, please
+            contact us as soon as possible.`
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info) {
+      if (error) {
+        console.log(error);
+        throw new Error('There was an error sending the email.');
+      } 
+      res.render('finished.hbs');
+    });
+  } catch (e) {
+    res.status(400).send({'message': e.message});
+  }
 });
 
 app.listen(port, () => {
