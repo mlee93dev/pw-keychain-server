@@ -40,8 +40,10 @@ app.post('/users', async (req, res) => {
 app.post('/users/login', async (req, res) => {
   try {
     let body = _.pick(req.body, ['email', 'password']);
+    console.log(body);
 
     let user = await User.findByCredentials(body.email, body.password);
+    console.log(user);
     if (!user) {
       throw new Error('User not found');
     }
@@ -49,7 +51,6 @@ app.post('/users/login', async (req, res) => {
     res.header('x-auth', token).send(user);
   }
   catch (e) {
-    console.log(e)
     res.status(400).send({'message': 'Invalid username or password'});
   }
 
@@ -167,8 +168,6 @@ app.post('/reset/:token', async function(req, res){
   try{
     const user = await User.findOneAndUpdate({resetPasswordToken: req.params.token, resetPasswordExpires: {$gt:Date.now()}},
       {$set: {password: req.body.password, resetPasswordToken: null, resetPasswordExpires: null}}, {new: true});
-    console.log(req);
-    console.log(user);
     const transporter = nodemailer.createTransport({
       service: 'Mailgun',
       auth: {
