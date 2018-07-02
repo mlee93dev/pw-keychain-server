@@ -114,6 +114,7 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.pre('update', function (next) {
+  console.log('hi')
   const password = this.getUpdate().$set.password;
   if (!password) {
     return next();
