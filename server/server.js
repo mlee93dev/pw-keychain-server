@@ -13,6 +13,7 @@ let app = express();
 const port = process.env.PORT || 3000;
 
 app.set('view engine', 'hbs');
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(function (req, res, next) {
