@@ -113,12 +113,13 @@ UserSchema.pre('save', function (next) {
   }
 });
 
-UserSchema.pre('update', function (next) {
+UserSchema.pre('findOneAndUpdate', function (next) {
   console.log('hi')
   const password = this.getUpdate().$set.password;
   if (!password) {
     return next();
   }
+  console.log(password);
   try {
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(password, salt, (err, hash) => {
