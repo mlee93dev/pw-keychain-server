@@ -114,8 +114,10 @@ UserSchema.pre('save', function (next) {
 });
 
 UserSchema.pre('findOneAndUpdate', function (next) {
-  const password = this.getUpdate().$set.password;
-  if (password == undefined) {
+  let password;
+  if (this.getUpdate().$set.password) {
+    password = this.getUpdate().$set.password;
+  } else {
     return next();
   }
   try {
