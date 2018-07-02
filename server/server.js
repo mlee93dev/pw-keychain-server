@@ -165,11 +165,7 @@ app.get('/reset/:token', function(req, res) {
 app.post('/reset/:token', async function(req, res){
   try{
     const user = await User.findOneAndUpdate({resetPasswordToken: req.params.token, resetPasswordExpires: {$gt:Date.now()}},
-      {$set: {password: req.body.password, resetPasswordToken: null, resetPasswordExpires: null}}, {new: true}, function(err, user) {
-        if (!user) {
-          res.render('error.hbs');
-        }
-    });
+      {$set: {password: req.body.password, resetPasswordToken: null, resetPasswordExpires: null}}, {new: true});
     console.log(user);
     const transporter = nodemailer.createTransport({
       service: 'Mailgun',
