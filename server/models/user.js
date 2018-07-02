@@ -102,7 +102,6 @@ UserSchema.pre('save', function (next) {
   let user = this;
 
   if (user.isModified('password')){
-    console.log('hi')
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(user.password, salt, (err, hash) => {
         user.password = hash;
@@ -111,6 +110,23 @@ UserSchema.pre('save', function (next) {
     })
   } else {
     next();
+  }
+});
+
+UserSchema.pre('update', function (next) {
+  const password = this.getUpdate().$set.password;
+  if (!password) {
+    return next();
+  }
+  try {
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(password, salt, (err, hash) => {
+        this.getUpdate().$set.password = hash;
+        next();
+      });
+    })
+  } catch (e) {
+    return next(e);
   }
 });
 
