@@ -1,6 +1,6 @@
 # pw-keychain-server
 # README Edit Date: July 5, 2018 by Mark Lee
-# Last code update: July 2, 2018 by Mark Lee
+# Last code update: July 22, 2018 by Mark Lee
 
 **App Purpose:**
 
@@ -11,3 +11,6 @@ It was coded using NodeJS, which was chosen due to the creator's familiarity wit
 **How to run the code**
 
 Download your IDE of choice (Visual Studio Code, Atom, etc) and a copy of this repo. Next download and install NodeJS. Open the main folder such that your IDE directory points to 'pw-keychain-server/'. Run 'npm install' to install npm and then 'npm start' or 'node server.js' to run the code locally.
+
+Update history:
+7/22: Changed allow-control-access-origin header to only allow client site.
